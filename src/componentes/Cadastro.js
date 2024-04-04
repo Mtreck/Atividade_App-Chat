@@ -16,9 +16,11 @@ const Cadastro = () => {
             console.log('Senha:', senha);
             console.log('Nome:', nome);
             
+            // Mostra as informações cadastradas no console.log()
+            console.log('Informações cadastradas:', { email, senha, nome });
+            
             navigation.navigate('Login');
         } else {
-            
             alert('Email inválido. Deve ser do IFPR.');
         }
     };
