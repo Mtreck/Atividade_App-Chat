@@ -1,25 +1,36 @@
 import React, { useState } from 'react';
 import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
+import db from './servivices/firebaseConfi';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const navigation = useNavigation();
 
-    const handleLogin = () => {
-         // Lógica de autenticação
-    if (email.toLowerCase().includes('@ifpr')) { // Verifica se o email inclui "@ifpr" (case insensitive)
-        console.log('Email:', email);
-        navigation.navigate('Chat'); // Navega para a tela de chat
-    } else {
-        alert('Email inválido. Deve ser do IFPR.'); 
-    }
+    async function handleLogin ()  {
+        const usuarios = collection(db, "usuarios");
+        const q = query(usuarios, where("email", "==", email));
+        
+        const dados = await getDocs(q)
+        dados.forEach(dado => {
+            console.log(dado.data())
+
+            if(dado.data().senha == senha){
+                navigation.navigate('Chat');
+            }else{
+                console.log("senha errada")
+            }
+        })
+
+       
+
     };
 
     const handleCadastro = () => {
         // Navega para a tela de cadastro
-        navigation.navigate('Cadastro');
+       navigation.navigate('Cadastro');
     };
 
     return (
@@ -34,6 +45,7 @@ const Login = () => {
                 style={styles.input}
                 placeholder="Digite seu email"
                 onChangeText={text => setEmail(text)}
+                
             />
             <TextInput
                 style={styles.input}
